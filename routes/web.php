@@ -2,6 +2,7 @@
 
 use App\Exports\TemplateSheetExport;
 use App\Exports\TemplateSiswaExport;
+use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\AppConfigController;
 use Illuminate\Support\Facades\Route;
 use Maatwebsite\Excel\Facades\Excel;
@@ -9,7 +10,7 @@ use Maatwebsite\Excel\Facades\Excel;
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::post('/scan',[AbsensiController::class,'absen'])->name('absen.scan');
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
