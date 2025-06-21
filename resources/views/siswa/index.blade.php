@@ -30,7 +30,7 @@
                                         class="fas fa-user-plus"></i>&nbsp;Tambah Siswa</button>
                                 <button class="btn btn-info mb-2" id="UploadUserBtn"><i
                                         class="fas fa-file-import"></i>&nbsp;Import Siswa</button>
-                                <a class="btn btn-info mb-2" id="PrintAllQrBtn"  href="{{ route('siswa.qr.massal', ['kelas_id' => request('kelas_id')]) }}"><i class="fas fa-print"></i>&nbsp;Cetak
+                                <a class="btn btn-info mb-2" id="PrintAllQrBtn" target="_blank" href="{{ route('siswa.qr.massal', ['kelas_id' => request('kelas_id')]) }}"><i class="fas fa-print"></i>&nbsp;Cetak
                                     QR Massal</a>
                                 <form action="{{ route('siswa.index') }}" method="GET" class="form-inline mb-2">
                                     <label for="filterKelas" class="mr-2">Filter Kelas:</label>

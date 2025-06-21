@@ -8,7 +8,7 @@ class Absensi extends Model
 {
     protected $fillable = [
         'siswa_id',
-        'waktu',
+        'waktu_absen',
         'status',
     ];
     public function siswa()

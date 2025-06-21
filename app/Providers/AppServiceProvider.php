@@ -23,10 +23,14 @@ class AppServiceProvider extends ServiceProvider
     private function getConfig()
     {
         // Cegah error saat tabel belum dimigrasi
-        // Ambil setting dari cache jika ada, jika tidak, ambil dari DB
-        $setting = Cache::rememberForever('setting', function () {
-            return AppConfig::first();
-        });
+        $setting = null;
+
+        if (Schema::hasTable('app_configs')) {
+            // Ambil setting dari cache jika ada, jika tidak, ambil dari DB
+            $setting = Cache::rememberForever('setting', function () {
+                return AppConfig::first();
+            });
+        }
 
         // Share ke seluruh view
         View::share('setting', $setting);
