@@ -20,7 +20,7 @@
 <body class="hold-transition login-page bg-dark">
     <div class="login-box">
         <div class="login-logo d-flex flex-column">
-            @if($setting->logo_path)
+            @if($setting?->logo_path)
             <a href="/"><img src="{{asset('storage/'.$setting->logo_path)}}" alt="{{ $setting->app_name ?? config('app.name') }} Logo" class="img-thumbnail" style="height: 100px;"></a>
             @endif
             <a href="/" class="text-white">{{ $setting->app_name ?? config('app.name') }}</a>

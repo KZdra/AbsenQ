@@ -26,7 +26,7 @@
                                     <div class="form-group col-md-6">
                                         <label for="app_name">Nama Aplikasi</label>
                                         <input type="text" class="form-control" id="app_name" name="app_name"
-                                            value="{{ old('app_name', $setting->app_name) }}" placeholder="ABSENSI SMK Xx">
+                                            value="{{ old('app_name', $setting?->app_name) }}" placeholder="ABSENSI SMK Xx">
                                         <div class="form-group mt-2">
                                             <label for="logo_path">Logo Aplikasi</label>
                                             <input type="file" class="form-control" name="logo_path" id="img-input"
@@ -37,10 +37,10 @@
                                             <select name="mode_scan" id="mode_scan" class="form-control">
                                                 <option value="">Pilih Mode Absensi</option>
                                                 <option value="qr"
-                                                    {{ old('mode_scan', $setting->mode_scan) == 'qr' ? 'selected' : '' }}>
+                                                    {{ old('mode_scan', $setting?->mode_scan) == 'qr' ? 'selected' : '' }}>
                                                     Menggunakan Kamera Webcam (QR)</option>
                                                 <option value="scanner"
-                                                    {{ old('mode_scan', $setting->mode_scan) == 'scanner' ? 'selected' : '' }}>
+                                                    {{ old('mode_scan', $setting?->mode_scan) == 'scanner' ? 'selected' : '' }}>
                                                     Menggunakan Scanner USB (QR Suport)</option>
                                             </select>
                                         </div>
@@ -65,7 +65,7 @@
     <script type="module">
         $(document).ready(function() {
             // Set fallback logo
-            @if ($setting->logo_path)
+            @if ($setting?->logo_path)
                 let logoUrl = "{{ asset('storage/' . $setting->logo_path) }}";
                 $('#preview').attr('src', logoUrl);
             @else
