@@ -19,6 +19,8 @@ Route::middleware('auth')->group(function () {
     Route::view('about', 'about')->name('about');
     Route::get('profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
     Route::put('profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::get('absenmanual', [\App\Http\Controllers\AbsenManualController::class, 'index'])->name('absenmanual.index');
+    Route::post('absenmanual', [\App\Http\Controllers\AbsenManualController::class, 'store'])->name('absenmanual.store');
     // Master Data
 
 
