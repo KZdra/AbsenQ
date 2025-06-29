@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="{{ asset('css/fontawesome.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('css/adminlte.min.css') }}">
+    @if ($setting?->logo_path)
+        <link rel="shortcut icon" href="{{ asset('storage/' . $setting->logo_path) }}" type="image/x-icon">
+    @endif
     @yield('styles')
 </head>
 
@@ -61,8 +64,8 @@
             <a href="/" class="brand-link">
                 @if ($setting?->logo_path)
                     <img src="{{ asset('storage/' . $setting->logo_path) }}"
-                        alt="{{ $setting->app_name ?? config('app.name') }} Logo"
-                        class="brand-image elevation-3" style="opacity: .8">
+                        alt="{{ $setting->app_name ?? config('app.name') }} Logo" class="brand-image elevation-3"
+                        style="opacity: .8">
                 @endif
                 <span class="brand-text font-weight-bold">{{ $setting->app_name ?? config('app.name') }}</span>
             </a>

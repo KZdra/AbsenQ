@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('absensis', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('siswa_id');
-            $table->date('waktu_absen');
+            $table->timestamp('waktu_absen');
             $table->enum('status', ['hadir', 'sakit', 'izin', 'alpa']);
             $table->timestamps();
             $table->foreign('siswa_id')->references('id')->on('siswas')->onDelete('cascade');

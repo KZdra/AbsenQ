@@ -11,7 +11,7 @@
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <li class="nav-item">
-                <a href="{{ route('home') }}" class="nav-link">
+                <a href="{{ route('home') }}" class="nav-link {{ request()->is('home*') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-th"></i>
                     <p>
                         {{ __('Beranda') }}
@@ -19,7 +19,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('about') }}" class="nav-link">
+                <a href="{{ route('absenmanual.index') }}" class="nav-link {{ request()->is('absenmanual*') ? 'active' : '' }}">
                     <i class="nav-icon far fa-address-card"></i>
                     <p>
                         {{ __('Absen Manual') }}
@@ -27,7 +27,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('users.index') }}" class="nav-link">
+                <a href="{{ route('reportabsen.index') }}" class="nav-link  {{ request()->is('reportabsen*') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-file-alt"></i>
                     <p>
                         {{ __('Report Absen') }}

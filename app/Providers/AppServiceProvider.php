@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use App\Models\AppConfig;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
@@ -44,5 +45,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->getConfig();
         Paginator::useBootstrap();
+        Carbon::setLocale('id');
     }
 }

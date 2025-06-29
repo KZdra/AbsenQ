@@ -10,6 +10,9 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    @if ($setting?->logo_path)
+        <link rel="shortcut icon" href="{{ asset('storage/' . $setting->logo_path) }}" type="image/x-icon">
+    @endif
 
     <!-- Styles / Scripts -->
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -1235,24 +1238,32 @@
                                     <div class="text-xl font-semibold text-black dark:text-white">
                                         Scan QR Code
                                     </div>
+                                    @if ($setting?->mode_scan === 'qr')
+                                        <div class="">
+                                            <!-- Dropdown Kamera -->
+                                            <label for="camera-select"
+                                                class="text-sm text-gray-600 dark:text-gray-300">Pilih
+                                                Kamera:</label>
+                                            <select id="camera-select"
+                                                class="p-2 rounded border w-full dark:bg-zinc-800 dark:text-white">
+                                                <option>Memuat kamera...</option>
+                                            </select>
 
-                                    <!-- Dropdown Kamera -->
-                                    <label for="camera-select" class="text-sm text-gray-600 dark:text-gray-300">Pilih
-                                        Kamera:</label>
-                                    <select id="camera-select"
-                                        class="p-2 rounded border w-full dark:bg-zinc-800 dark:text-white">
-                                        <option>Memuat kamera...</option>
-                                    </select>
-
-                                    <!-- Area Scanner -->
-                                    <div id="qr-reader" class="mt-4 rounded shadow-md overflow-hidden"
-                                        style="width: 100%; max-width: 500px;  -webkit-transform: scaleX(-1);
-  transform: scaleX(-1);">
-                                    </div>
-
-                                    <!-- Hasil Scan -->
-                                    <div id="qr-result"
-                                        class="mt-4 text-sm font-mono text-green-600 dark:text-green-400"></div>
+                                            <!-- Area Scanner -->
+                                            <div id="qr-reader" class="mt-4 rounded shadow-md overflow-hidden"
+                                                style="width: 100%; max-width: 500px;  -webkit-transform: scaleX(-1);
+                                        transform: scaleX(-1);">
+                                            </div>
+                                        </div>
+                                    @elseif ($setting?->mode_scan === 'scanner')
+                                        <input id="scannedBox" type="text" autofocus
+                                            class="p-2 rounded border w-full dark:bg-zinc-800 dark:text-white">
+                                        </input>
+                                    @else
+                                        <h2>Silahkan Lakukan Konfigurasi Disini!</h2>
+                                        <a href="{{ route('appconfig.index') }}" class="text-red-500">Klik Untuk ke halaman Konfigurasi
+                                            Aplikasi!</a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -1328,6 +1339,32 @@
         Jamhaha('time')
     }
 
+    function Post2server(param) {
+        $.ajax({
+            url: '{{ route('absen.scan') }}', // Ganti dengan route kamu
+            method: 'POST',
+            data: {
+                _token: "{{ csrf_token() }}",
+                qr_code: param
+            },
+            success: function(res) {
+                // console.log(res)
+                if (res && res.exist === false) {
+                    $result.text("✅ " + res.nama);
+                    SwalHelper.showSuccess(res.message);
+                } else if (res && res.exist === true) {
+                    SwalHelper.showInfo(res.message);
+                } else {
+                    SwalHelper.showError(
+                        "Terjadi kesalahan pada respons server.");
+                }
+
+            },
+            error: function(xhr) {
+                SwalHelper.showError(xhr.responseText)
+            }
+        });
+    }
     $(document).ready(function() {
 
         refreshTime();
@@ -1336,108 +1373,84 @@
         const qrReaderId = "qr-reader";
         const $cameraSelect = $("#camera-select");
         const $result = $("#lastAbsen");
+        @if ($setting && $setting->mode_scan === 'qr')
+            const html5QrCode = new Html5Qrcode(qrReaderId);
+            let currentCameraId = null;
 
-        const html5QrCode = new Html5Qrcode(qrReaderId);
-        let currentCameraId = null;
+            // Mulai scanner
+            function startScanner(cameraId) {
+                html5QrCode.start(
+                    cameraId, {
+                        fps: 10,
+                        qrbox: {
+                            width: 250,
+                            height: 250
+                        }
+                    },
+                    qrCodeMessage => {
 
-        // Mulai scanner
-        function startScanner(cameraId) {
-            html5QrCode.start(
-                cameraId, {
-                    fps: 10,
-                    qrbox: {
-                        width: 250,
-                        height: 250
-                    }
-                },
-                qrCodeMessage => {
-
-                    // STOP scanner dulu
-                    html5QrCode.stop().then(() => {
-                        // Submit QR ke backend
-                        $.ajax({
-                            url: '{{ route('absen.scan') }}', // Ganti dengan route kamu
-                            method: 'POST',
-                            data: {
-                                _token: "{{ csrf_token() }}",
-                                qr_code: qrCodeMessage
-                            },
-                            success: function(res) {
-                                // console.log(res)
-                                if (res && res.exist === false) {
-                                    $result.text("✅ " + res.nama);
-                                    SwalHelper.showSuccess(res.message);
-                                } else if (res && res.exist === true) {
-                                    SwalHelper.showInfo(res.message);
-                                } else {
-                                    SwalHelper.showError(
-                                        "Terjadi kesalahan pada respons server.");
-                                }
-
-                            },
-                            error: function(xhr) {
-                                SwalHelper.showError(xhr.responseText)
-                            }
+                        // STOP scanner dulu
+                        html5QrCode.stop().then(() => {
+                            // Submit QR ke backend
+                            Post2server(qrCodeMessage)
+                            setTimeout(() => {
+                                startScanner(cameraId);
+                            }, 2000);
+                        }).catch(err => {
+                            console.warn("Gagal stop scanner:", err);
                         });
-
-                        setTimeout(() => {
-                            startScanner(cameraId);
-                        }, 2000);
-                    }).catch(err => {
-                        console.warn("Gagal stop scanner:", err);
-                    });
-                },
-                errorMessage => {
-                    // optional: console.warn("Scan error:", errorMessage);
-                }
-            ).catch(err => {
-                alert("Gagal memulai kamera: " + err);
-            });
-        }
-
-
-        // Dapatkan daftar kamera
-        Html5Qrcode.getCameras().then(devices => {
-            $cameraSelect.empty();
-            $.each(devices, function(i, device) {
-                $cameraSelect.append(
-                    $("<option>", {
-                        value: device.id,
-                        text: device.label || `Kamera ${i + 1}`
-                    })
-                );
-            });
-
-            if (devices.length > 0) {
-                currentCameraId = devices[0].id;
-                $cameraSelect.val(currentCameraId);
-                startScanner(currentCameraId);
+                    },
+                    errorMessage => {
+                        // optional: console.warn("Scan error:", errorMessage);
+                    }
+                ).catch(err => {
+                    alert("Gagal memulai kamera: " + err);
+                });
             }
-        }).catch(err => {
-            alert("Tidak ada kamera ditemukan: " + err);
-        });
 
-        // Ganti kamera
-        $cameraSelect.on("change", function() {
-            const newCameraId = $(this).val();
 
-            if (newCameraId && newCameraId !== currentCameraId) {
-                const scannerState = html5QrCode.getState();
+            // Dapatkan daftar kamera
+            Html5Qrcode.getCameras().then(devices => {
+                $cameraSelect.empty();
+                $.each(devices, function(i, device) {
+                    $cameraSelect.append(
+                        $("<option>", {
+                            value: device.id,
+                            text: device.label || `Kamera ${i + 1}`
+                        })
+                    );
+                });
 
-                if (scannerState === Html5QrcodeScannerState.SCANNING || scannerState ===
-                    Html5QrcodeScannerState.PAUSED) {
-                    html5QrCode.stop().then(() => {
+                if (devices.length > 0) {
+                    currentCameraId = devices[0].id;
+                    $cameraSelect.val(currentCameraId);
+                    startScanner(currentCameraId);
+                }
+            }).catch(err => {
+                alert("Tidak ada kamera ditemukan: " + err);
+            });
+
+            // Ganti kamera
+            $cameraSelect.on("change", function() {
+                const newCameraId = $(this).val();
+
+                if (newCameraId && newCameraId !== currentCameraId) {
+                    const scannerState = html5QrCode.getState();
+
+                    if (scannerState === Html5QrcodeScannerState.SCANNING || scannerState ===
+                        Html5QrcodeScannerState.PAUSED) {
+                        html5QrCode.stop().then(() => {
+                            currentCameraId = newCameraId;
+                            startScanner(newCameraId);
+                        }).catch(err => {
+                            console.warn("Gagal menghentikan scanner: ", err);
+                        });
+                    } else {
                         currentCameraId = newCameraId;
                         startScanner(newCameraId);
-                    }).catch(err => {
-                        console.warn("Gagal menghentikan scanner: ", err);
-                    });
-                } else {
-                    currentCameraId = newCameraId;
-                    startScanner(newCameraId);
+                    }
                 }
-            }
-        });
-
+            });
+        @endif
     })
 </script>
