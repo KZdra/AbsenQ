@@ -21,6 +21,10 @@ Route::middleware('auth')->group(function () {
     Route::put('profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::get('absenmanual', [\App\Http\Controllers\AbsenManualController::class, 'index'])->name('absenmanual.index');
     Route::post('absenmanual', [\App\Http\Controllers\AbsenManualController::class, 'store'])->name('absenmanual.store');
+
+    Route::get('reportabsen',[\App\Http\Controllers\ReportAbsenController::class, 'index'])->name('reportabsen.index');
+    Route::get('reportabsen/data',[\App\Http\Controllers\ReportAbsenController::class, 'getData'])->name('reportabsen.getData');
+    Route::get('reportabsen/export',[\App\Http\Controllers\ReportAbsenController::class, 'export'])->name('reportabsen.export');
     // Master Data
 
 

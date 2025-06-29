@@ -27,7 +27,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('users.index') }}" class="nav-link">
+                <a href="{{ route('reportabsen.index') }}" class="nav-link  {{ request()->is('reportabsen*') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-file-alt"></i>
                     <p>
                         {{ __('Report Absen') }}

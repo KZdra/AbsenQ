@@ -62,9 +62,9 @@
                                             <td>{{ $user->kelas->nama_kelas }}</td>
                                             <td>
                                                 @if (isset($absensiHariIni[$user->id]))
-                                                {{ \Carbon\Carbon:: parse($absensiHariIni[$user->id]->waktu_absen)->translatedFormat('d F Y H:i') ?? '-' }}
+                                                    {{ \Carbon\Carbon::parse($absensiHariIni[$user->id]->waktu_absen)->translatedFormat('d F Y H:i') ?? '-' }}
                                                 @else
-                                                Belum Absen Hari Ini
+                                                    Belum Absen Hari Ini
                                                 @endif
                                             </td>
                                             <td>
@@ -74,9 +74,41 @@
                                                         Absen
                                                     </button>
                                                 @else
-                                                    <span class="badge badge-success">
-                                                        {{ ucfirst($absensiHariIni[$user->id]->status) }}
-                                                    </span>
+                                                    @switch($absensiHariIni[$user->id]->status)
+                                                        @case('hadir')
+                                                            <h4>
+                                                                <span class="badge  badge-info">
+                                                                    {{ ucfirst($absensiHariIni[$user->id]->status) }}
+                                                                </span>
+                                                            </h4>
+                                                        @break
+
+                                                        @case('sakit')
+                                                            <h4>
+                                                                <span class="badge  badge-danger">
+                                                                    {{ ucfirst($absensiHariIni[$user->id]->status) }}
+                                                                </span>
+                                                            </h4>
+                                                        @break
+
+                                                        @case('izin')
+                                                            <h4>
+                                                                <span class="badge  badge-warning">
+                                                                    {{ ucfirst($absensiHariIni[$user->id]->status) }}
+                                                                </span>
+                                                            </h4>
+                                                        @break
+
+                                                        @case('alpa')
+                                                            <h4>
+                                                                <span class="badge  badge-secondary">
+                                                                    {{ ucfirst($absensiHariIni[$user->id]->status) }}
+                                                                </span>
+                                                            </h4>
+                                                        @break
+
+                                                        @default
+                                                    @endswitch
                                                 @endif
                                             </td>
 
